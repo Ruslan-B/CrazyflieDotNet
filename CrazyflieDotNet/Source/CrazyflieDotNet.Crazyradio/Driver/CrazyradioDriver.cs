@@ -581,7 +581,7 @@ namespace CrazyflieDotNet.Crazyradio.Driver
 
 			Log.DebugFormat("Writing data to UsbDevice. Data: {0}, DataLength: {1}.", data == null ? "NULL" : BitConverter.ToString(data), dataLength);
 
-            const int writeTimeout = 100; // cannot be more than 4000us * 16 times = 60 ms
+            const int writeTimeout = 60; // cannot be more than 4000us * 16 times = 60 ms
             var sendErrorCode = _crazyradioDataEndpointWriter.Write(data, 0, dataLength, writeTimeout, out lengthTransferred);
 			var sendFailed = sendErrorCode != ErrorCode.None;
 
@@ -601,7 +601,7 @@ namespace CrazyflieDotNet.Crazyradio.Driver
 
 				Log.DebugFormat("Reading data from UsbDevice.");
 
-			    const int readTimeout = 10;
+			    const int readTimeout = 60;
 			    var readErrorCode = _crazyradioDataEndpointReader.Read(responseBuffer, readTimeout, out lengthTransferred);
 				var readFailed = readErrorCode != ErrorCode.None;
 				var response = readFailed ? new byte[]{} : responseBuffer.Take(lengthTransferred).ToArray();

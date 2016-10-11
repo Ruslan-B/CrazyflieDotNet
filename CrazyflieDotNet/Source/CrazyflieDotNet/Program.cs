@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CrazyflieDotNet.Crazyflie;
 using CrazyflieDotNet.Crazyflie.TransferProtocol;
 using CrazyflieDotNet.Crazyradio.Driver;
 using log4net;
@@ -32,10 +33,11 @@ namespace CrazyflieDotNet
 				// TESTS:
 				try
 				{
-					//TestCRTP(crazyradioDriver);
+                    TestLogging.Execute(crazyradioDriver);
+                    //TestCRTP(crazyradioDriver);
 
-					TestPS3Controller(crazyradioDriver);
-				}
+                    //TestPS3Controller(crazyradioDriver);
+                }
 				catch (Exception ex)
 				{
 					Log.Error("Error testing Crazyradio.", ex);
@@ -128,15 +130,15 @@ namespace CrazyflieDotNet
 		{
 			if (crazyradioDriver != null)
 			{
-				var crazyRadioMessenger = new CrazyflieMessenger(crazyradioDriver);
+				var crazyRadioMessenger = new CrazyflieClient(crazyradioDriver);
 
 				try
 				{
-					IPacket ackPacket = null;
+					Ack ackPacket;
 					byte[] ackPacketBytes = null;
 
-					Log.InfoFormat("Ping Packet Request: {0}", PingPacket.Instance);
-					ackPacket = crazyRadioMessenger.SendMessage(PingPacket.Instance);
+					Log.InfoFormat("Ping Packet Request");
+					ackPacket = crazyRadioMessenger.Send(new PingCommand());
 					Log.InfoFormat("ACK Response: {0}", ackPacket);
 
 
@@ -164,9 +166,9 @@ namespace CrazyflieDotNet
 								break;
 							// pause
 							case ConsoleKey.Spacebar:
-								var commanderPacket = new CommanderPacket(roll, pitch, yaw, thrust = 10000);
+								var commanderPacket = new FlyControlCommand(roll, pitch, yaw, thrust = 10000);
 								Log.InfoFormat("Commander Packet Request: {0}", commanderPacket);
-								ackPacket = crazyRadioMessenger.SendMessage(commanderPacket);
+								ackPacket = crazyRadioMessenger.Send(commanderPacket);
 								Log.InfoFormat("ACK Response: {0}", ackPacket);
 
 								Log.InfoFormat("Paused...Hit SPACE to resume, ESC to quit.");
@@ -229,9 +231,9 @@ namespace CrazyflieDotNet
 						}
 
 						{
-							var commanderPacket = new CommanderPacket(roll, pitch, yaw, thrust);
+							var commanderPacket = new FlyControlCommand(roll, pitch, yaw, thrust);
 							Log.InfoFormat("Commander Packet Request: {0}", commanderPacket);
-							ackPacket = crazyRadioMessenger.SendMessage(commanderPacket);
+							ackPacket = crazyRadioMessenger.Send(commanderPacket);
 							Log.InfoFormat("ACK Response: {0}", ackPacket);
 						}
 					}
@@ -242,7 +244,7 @@ namespace CrazyflieDotNet
 				}
 				finally
 				{
-					crazyRadioMessenger.SendMessage(new CommanderPacket(0, 0, 0, 0));
+					crazyRadioMessenger.Send(new FlyControlCommand(0, 0, 0, 0));
 				}
 			}
 		}
@@ -251,9 +253,9 @@ namespace CrazyflieDotNet
 		{
 			if (crazyradioDriver != null)
 			{
-				var crazyRadioMessenger = new CrazyflieMessenger(crazyradioDriver);
+				var crazyRadioMessenger = new CrazyflieClient(crazyradioDriver);
 
-				var stopMotorsCommanderPacket = new CommanderPacket(roll: 0, pitch: 0, yaw: 0, thrust: 0);
+				var stopMotorsCommanderPacket = new FlyControlCommand(roll: 0, pitch: 0, yaw: 0, thrust: 0);
 
 				try
 				{
@@ -305,12 +307,8 @@ namespace CrazyflieDotNet
 							// pause
 							case ConsoleKey.Spacebar:
 								Log.InfoFormat("Paused...Hit SPACE to resume, ESC to quit.");
-
-								thrust = 0;
-								pitch = 0;
-								yaw = 0;
-								roll = 0;
-								crazyRadioMessenger.SendMessage(stopMotorsCommanderPacket);
+                                    
+								crazyRadioMessenger.Send(stopMotorsCommanderPacket);
 
 								var pauseLoop = true;
 								while (pauseLoop)
@@ -351,7 +349,7 @@ namespace CrazyflieDotNet
 							{
 								if (buttons[buttonNumber] == true)
 								{
-									stringWriter.Write(string.Format("{0}", buttonNumber));
+									stringWriter.Write($"{buttonNumber}");
 								}
 							}
 						}
@@ -368,11 +366,11 @@ namespace CrazyflieDotNet
 						yaw = yawRange * leftStickX / stickRange;
 						thrust = (ushort)(leftStickY > 0 ? 0 : thrustRange * -1 * leftStickY / stickRange);
 
-						var infoString = String.Format("LX:{0,7}, LY:{1,7}, RX:{2,7}, RY:{3,7}, Buttons:{4,7}.\tRoll:{5, 7}, Pitch:{6, 7}, Yaw:{7, 7}, Thrust:{8, 7}.", leftStickX, leftStickY, rightStickX, rightStickY, buttonsPressedString, roll, pitch, yaw, thrust);
+						var infoString = $"LX:{leftStickX,7}, LY:{leftStickY,7}, RX:{rightStickX,7}, RY:{rightStickY,7}, Buttons:{buttonsPressedString,7}.\tRoll:{roll,7}, Pitch:{pitch,7}, Yaw:{yaw,7}, Thrust:{thrust,7}.";
 						Console.WriteLine(infoString);
 
-						var commanderPacket = new CommanderPacket(roll, pitch, yaw, thrust);
-						crazyRadioMessenger.SendMessage(commanderPacket);
+						var commanderPacket = new FlyControlCommand(roll, pitch, yaw, thrust);
+						crazyRadioMessenger.Send(commanderPacket);
 					}
 				}
 				catch (Exception ex)
@@ -381,7 +379,7 @@ namespace CrazyflieDotNet
 				}
 				finally
 				{
-					crazyRadioMessenger.SendMessage(stopMotorsCommanderPacket);
+					crazyRadioMessenger.Send(stopMotorsCommanderPacket);
 				}
 			}
 		}

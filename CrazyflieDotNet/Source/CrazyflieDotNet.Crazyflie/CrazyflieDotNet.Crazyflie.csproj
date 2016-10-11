@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CrazyflieDotNet.Crazyflie</RootNamespace>
     <AssemblyName>CrazyflieDotNet.Crazyflie</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,54 +30,44 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="log4net">
-      <HintPath>..\..\packages\log4net.2.0.5\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="System.Reactive.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Core.3.0.0\lib\net46\System.Reactive.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Interfaces.3.0.0\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Linq.3.0.0\lib\net46\System.Reactive.Linq.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TransferProtocol\CommanderPacketHeader.cs" />
-    <Compile Include="TransferProtocol\CommanderPacketPayload.cs" />
-    <Compile Include="TransferProtocol\CrazyflieMessenger.cs" />
-    <Compile Include="TransferProtocol\AckPacket.cs" />
-    <Compile Include="TransferProtocol\AckPacketHeader.cs" />
-    <Compile Include="TransferProtocol\CommanderPacket.cs" />
-    <Compile Include="TransferProtocol\IAckPacket.cs" />
-    <Compile Include="TransferProtocol\ICommanderPacket.cs" />
-    <Compile Include="TransferProtocol\ICommanderPacketHeader.cs" />
-    <Compile Include="TransferProtocol\ICommanderPacketPayload.cs" />
-    <Compile Include="TransferProtocol\IPingPacket.cs" />
-    <Compile Include="TransferProtocol\IPingPacketHeader.cs" />
-    <Compile Include="TransferProtocol\OutputPacket.cs" />
-    <Compile Include="TransferProtocol\OutputPacketHeader.cs" />
-    <Compile Include="TransferProtocol\OutputPacketPayload.cs" />
-    <Compile Include="TransferProtocol\Packet.cs" />
-    <Compile Include="TransferProtocol\PacketHeader.cs" />
-    <Compile Include="TransferProtocol\PacketPayload.cs" />
-    <Compile Include="TransferProtocol\PingPacket.cs" />
-    <Compile Include="TransferProtocol\PingPacketHeader.cs" />
-    <Compile Include="TransferProtocol\ICrazyflieMessenger.cs" />
-    <Compile Include="TransferProtocol\IAckPacketHeader.cs" />
-    <Compile Include="TransferProtocol\IOutputPacket.cs" />
-    <Compile Include="TransferProtocol\IOutputPacketHeader.cs" />
-    <Compile Include="TransferProtocol\IOutputPacketPayload.cs" />
-    <Compile Include="TransferProtocol\IPacket.cs" />
-    <Compile Include="TransferProtocol\IPacketHeader.cs" />
-    <Compile Include="TransferProtocol\IPacketPayload.cs" />
+    <Compile Include="TransferProtocol\ArrayOfByteExtension.cs" />
+    <Compile Include="TransferProtocol\CrtpHelper.cs" />
+    <Compile Include="TransferProtocol\FlyControlCommand.cs" />
+    <Compile Include="TransferProtocol\CrazyflieClient.cs" />
+    <Compile Include="TransferProtocol\Ack.cs" />
+    <Compile Include="TransferProtocol\ICommand.cs" />
+    <Compile Include="TransferProtocol\IResponceParser.cs" />
+    <Compile Include="TransferProtocol\BlockControl.cs" />
+    <Compile Include="TransferProtocol\BlockControlResult.cs" />
+    <Compile Include="TransferProtocol\GetTableOfContentsExchange.cs" />
+    <Compile Include="TransferProtocol\GetTableOfContentsItemExchange.cs" />
+    <Compile Include="TableOfContentsItem.cs" />
+    <Compile Include="TableOfContents.cs" />
+    <Compile Include="ItemValueType.cs" />
+    <Compile Include="TransferProtocol\ICommandExchange.cs" />
+    <Compile Include="TransferProtocol\PingCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransferProtocol\CommunicationPort.cs" />
     <Compile Include="TransferProtocol\CommunicationChannel.cs" />
-    <Compile Include="..\GlobalAssemblyInfo.cs">
-      <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CrazyflieDotNet.Crazyradio\CrazyflieDotNet.Crazyradio.csproj">

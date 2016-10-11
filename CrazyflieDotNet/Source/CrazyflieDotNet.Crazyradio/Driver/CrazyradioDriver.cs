@@ -581,7 +581,8 @@ namespace CrazyflieDotNet.Crazyradio.Driver
 
 			Log.DebugFormat("Writing data to UsbDevice. Data: {0}, DataLength: {1}.", data == null ? "NULL" : BitConverter.ToString(data), dataLength);
 
-			var sendErrorCode = _crazyradioDataEndpointWriter.Write(data, 0, dataLength, 1000, out lengthTransferred);
+            const int writeTimeout = 100; // cannot be more than 4000us * 16 times = 60 ms
+            var sendErrorCode = _crazyradioDataEndpointWriter.Write(data, 0, dataLength, writeTimeout, out lengthTransferred);
 			var sendFailed = sendErrorCode != ErrorCode.None;
 
 			Log.DebugFormat("Write data success? {0}. LengthTransferred: {1}. ErrorCode: {2}.", !sendFailed, lengthTransferred, sendErrorCode);
@@ -600,26 +601,24 @@ namespace CrazyflieDotNet.Crazyradio.Driver
 
 				Log.DebugFormat("Reading data from UsbDevice.");
 
-				var readErrorCode = _crazyradioDataEndpointReader.Read(responseBuffer, 100, out lengthTransferred);
+			    const int readTimeout = 10;
+			    var readErrorCode = _crazyradioDataEndpointReader.Read(responseBuffer, readTimeout, out lengthTransferred);
 				var readFailed = readErrorCode != ErrorCode.None;
-				var response = readFailed ? null : responseBuffer.Take(lengthTransferred).ToArray();
+				var response = readFailed ? new byte[]{} : responseBuffer.Take(lengthTransferred).ToArray();
 
 				Log.DebugFormat("Read data success? {0}. ErrorCode: {1}.", !readFailed, readErrorCode);
 
 				if (readFailed)
 				{
 					Log.WarnFormat("Error reading data from UsbDevice. ErrorCode: {0}.", readErrorCode);
-
-					return null;
 				}
 				else
 				{
 					Log.DebugFormat("Succesfully read data from UsbDevice. Data: {0}, LengthTransferred: {1}.", response == null ? "NULL" : BitConverter.ToString(response), lengthTransferred);
-
-					return response;
 				}
-			}
-		}
+                return response;
+            }
+        }
 
 		public bool Equals(ICrazyradioDriver other)
 		{

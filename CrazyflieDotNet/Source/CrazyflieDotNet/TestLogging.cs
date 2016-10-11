@@ -78,7 +78,7 @@ namespace CrazyflieDotNet
                 var item = client.Send(new GetTableOfContentsItemExchange(id));
                 items.Add(item);
 
-                Console.WriteLine(item);
+                Log.Info($"TOC item: {item}");
             }
             return items;
         }

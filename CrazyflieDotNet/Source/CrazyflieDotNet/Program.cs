@@ -106,11 +106,10 @@ namespace CrazyflieDotNet
 
 						return crazyradioDriver;
 					}
-					else
-					{
-						Log.Warn("No Crazyflie quadcopters available for communication.");
-						return null;
-					}
+
+                    crazyradioDriver.Close();
+				    Log.Warn("No Crazyflie quadcopters available for communication.");
+				    return null;
 				}
 				catch (Exception ex)
 				{

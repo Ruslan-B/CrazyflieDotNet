@@ -4,14 +4,16 @@
 
 #endregion
 
+using System.Linq;
+
 namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 {
-    public sealed class GetTableOfContentsExchange : ICommandExchange<TableOfContents>
+    public sealed class GetLoggingInfoExchange : ICommandExchange<LoggingInfo>
     {
         private static readonly byte Header = CrtpHelper.CreateHeader(CommunicationPort.Logging, CommunicationChannel.Channel0);
         private readonly byte[] _commandBytes;
 
-        public GetTableOfContentsExchange()
+        public GetLoggingInfoExchange()
         {
             const byte getInfo = 0x01;
             _commandBytes = new[] {Header, getInfo};
@@ -19,21 +21,21 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 
         public byte[] GetCommandBytes() => _commandBytes;
 
-        public bool TryParse(byte[] data, out TableOfContents result)
+        public bool TryParse(byte[] data, out LoggingInfo result)
         {
             const int dataLength = 9;
             if (data.Length == dataLength && data.StartsWith(_commandBytes))
             {
-                result = new TableOfContents
+                result = new LoggingInfo
                 {
-                    Length = data[2],
-                    Crc = data[6] << 8 * 3 | data[5] << 8 * 2 | data[4] << 8 | data[3],
+                    Count = data[2],
+                    Crc = CrtpHelper.GetCrc(data.Skip(3).Take(4).ToArray()),
                     MaximumNumberOfPackets = data[7],
                     MaximumNumberOfOperation = data[8],
                 };
                 return true;
             }
-            result = default(TableOfContents);
+            result = default(LoggingInfo);
             return false;
         }
     }

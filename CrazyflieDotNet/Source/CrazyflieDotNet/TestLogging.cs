@@ -1,10 +1,8 @@
 ﻿#region Imports
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CrazyflieDotNet.Crazyflie;
 using CrazyflieDotNet.Crazyflie.TransferProtocol;
 using CrazyflieDotNet.Crazyradio.Driver;
 using log4net;
@@ -28,24 +26,26 @@ namespace CrazyflieDotNet
             var sw = Stopwatch.StartNew();
 
             var client = new CrazyflieClient(driver);
-
             BlockControlResult controlResult;
             controlResult = client.Send(new ResetAllBlocksExchange());
             Log.Info($"Reset all logging blocks, Result: {controlResult}");
 
-
             client.Send(new FlyControlCommand(roll: 0, pitch: 0, yaw: 0, thrust: 1000));
-            
-            var items = GetTableOfContentsItems(client);
+
+            var @params = GetParameters(client);
+
+            //client.Send(new Parameters.GetParameterExchange());
+
+            var items = GetLoggingVariables(client);
 
             var monitor = items.Where(x => x.Group == "stabilizer").ToList();
-            
-            byte blockId = 0x7f;
-            controlResult = client.Send(new CreateBlockExchange(blockId, monitor));
-            Log.Info($"Create logging block with id: {blockId}, Result: {controlResult}");
 
-            controlResult = client.Send(new StartBlockExchange(blockId, interval: 10));
-            Log.Info($"Start logging block with  id: {blockId}, Result: {controlResult}");
+            //byte blockId = 0x7f;
+            //controlResult = client.Send(new CreateBlockExchange(blockId, monitor));
+            //Log.Info($"Create logging block with id: {blockId}, Result: {controlResult}");
+
+            //controlResult = client.Send(new StartBlockExchange(blockId, interval: 100));
+            //Log.Info($"Start logging block with  id: {blockId}, Result: {controlResult}");
 
             Log.Info($"Done in: {sw.ElapsedMilliseconds}");
             Log.Info("Execute test done! Press Escape!");
@@ -53,7 +53,7 @@ namespace CrazyflieDotNet
             //while (true)
             //{
             //    var data = driver.SendData(new byte[] { 0xff });
-            //    if (data.Length > 4)
+            //    if (data.Count > 4)
             //    {
             //        Console.WriteLine(BitConverter.ToString(data));
             //    }
@@ -66,20 +66,35 @@ namespace CrazyflieDotNet
             client.Send(new ResetAllBlocksExchange());
         }
 
-        private static List<TableOfContentsItem> GetTableOfContentsItems(CrazyflieClient client)
+        private static List<LoggingVariable> GetLoggingVariables(CrazyflieClient client)
         {
-            var tableOfContents = client.Send(new GetTableOfContentsExchange());
-            Log.Info(tableOfContents);
+            var loggingInfo = client.Send(new GetLoggingInfoExchange());
+            Log.Info($"Logging info: {loggingInfo}");
 
-            var items = new List<TableOfContentsItem>();
+            var items = Enumerable.Range(0, loggingInfo.Count)
+                .Select(id =>
+                        {
+                            var variable = client.Send(new GetLoggingVariableExchange((byte) id));
+                            Log.Info($"Logging variable: {variable}");
+                            return variable;
+                        })
+                .ToList();
+            return items;
+        }
 
-            foreach (byte id in Enumerable.Range(0, tableOfContents.Length))
-            {
-                var item = client.Send(new GetTableOfContentsItemExchange(id));
-                items.Add(item);
+        private static List<Parameter> GetParameters(CrazyflieClient client)
+        {
+            var paramsInfo = client.Send(new GetParametersInfoExchange());
+            Log.Info($"Parameters info: {paramsInfo}");
 
-                Log.Info($"TOC item: {item}");
-            }
+            var items = Enumerable.Range(0, paramsInfo.Count)
+                .Select(id =>
+                        {
+                            var parameter = client.Send(new GetParameterExchange((byte) id));
+                            Log.Info($"Parameter: {parameter}");
+                            return parameter;
+                        })
+                .ToList();
             return items;
         }
     }

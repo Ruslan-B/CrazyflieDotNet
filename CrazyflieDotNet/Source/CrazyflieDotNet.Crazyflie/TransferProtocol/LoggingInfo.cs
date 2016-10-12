@@ -1,11 +1,11 @@
-﻿namespace CrazyflieDotNet.Crazyflie
+﻿namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 {
-    public struct TableOfContents
+    public struct LoggingInfo
     {
         /// <summary>
         ///     Number of log items contained in the log table of content.
         /// </summary>
-        public byte Length { get; set; }
+        public byte Count { get; set; }
 
         /// <summary>
         ///     CRC values of the log TOC memory content. This is a fingerprint of the copter build that can be used to cache the
@@ -23,6 +23,6 @@
         /// </summary>
         public byte MaximumNumberOfOperation { get; set; }
 
-        public override string ToString() => $"Table of contents information, Length: {Length}, Crc: 0x{Crc:X}, MaximumNumberOfOperation: {MaximumNumberOfOperation}, MaximumNumberOfPackets: {MaximumNumberOfPackets}";
+        public override string ToString() => $"Count: {Count}, Crc: 0x{Crc:X}, MaximumNumberOfOperation: {MaximumNumberOfOperation}, MaximumNumberOfPackets: {MaximumNumberOfPackets}";
     }
 }

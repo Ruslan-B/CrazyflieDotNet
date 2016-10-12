@@ -1,6 +1,6 @@
-﻿namespace CrazyflieDotNet.Crazyflie
+﻿namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 {
-    public enum ItemValueType : byte
+    public enum LoggingVariableType : byte
     {
         UInt8 = 0x01,
         UInt16 = 0x02,

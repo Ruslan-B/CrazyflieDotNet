@@ -16,14 +16,14 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
         private const byte StopBlock = 0x04;
         private const byte ResetAllBlocks = 0x05;
 
-        private static byte[] ToPayload(IEnumerable<TableOfContentsItem> items) => items.SelectMany(x => new[] {(byte) x.ValueType, x.Id}).ToArray();
+        private static byte[] ToPayload(IEnumerable<LoggingVariable> items) => items.SelectMany(x => new[] {(byte) x.Type, x.Id}).ToArray();
 
         /// <summary>
         ///     Create a new log block.
         /// </summary>
         public sealed class CreateBlockExchange : BlockControlExchangeBase
         {
-            public CreateBlockExchange(byte blockId, IEnumerable<TableOfContentsItem> items)
+            public CreateBlockExchange(byte blockId, IEnumerable<LoggingVariable> items)
                 : base(CreateBlock, blockId, ToPayload(items))
             {
             }
@@ -34,7 +34,7 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
         /// </summary>
         public sealed class AppendBlockExchange : BlockControlExchangeBase
         {
-            public AppendBlockExchange(byte blockId, IEnumerable<TableOfContentsItem> items)
+            public AppendBlockExchange(byte blockId, IEnumerable<LoggingVariable> items)
                 : base(AppendBlock, blockId, ToPayload(items))
             {
             }

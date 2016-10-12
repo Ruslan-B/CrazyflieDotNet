@@ -54,20 +54,24 @@
     <Compile Include="TransferProtocol\FlyControlCommand.cs" />
     <Compile Include="TransferProtocol\CrazyflieClient.cs" />
     <Compile Include="TransferProtocol\Ack.cs" />
+    <Compile Include="TransferProtocol\GetParameterExchange.cs" />
+    <Compile Include="TransferProtocol\GetParametersInfoExchange.cs" />
     <Compile Include="TransferProtocol\ICommand.cs" />
     <Compile Include="TransferProtocol\IResponceParser.cs" />
     <Compile Include="TransferProtocol\BlockControl.cs" />
     <Compile Include="TransferProtocol\BlockControlResult.cs" />
-    <Compile Include="TransferProtocol\GetTableOfContentsExchange.cs" />
-    <Compile Include="TransferProtocol\GetTableOfContentsItemExchange.cs" />
-    <Compile Include="TableOfContentsItem.cs" />
-    <Compile Include="TableOfContents.cs" />
-    <Compile Include="ItemValueType.cs" />
+    <Compile Include="TransferProtocol\GetLoggingInfoExchange.cs" />
+    <Compile Include="TransferProtocol\GetLoggingVariableExchange.cs" />
+    <Compile Include="TransferProtocol\LoggingVariable.cs" />
+    <Compile Include="TransferProtocol\LoggingInfo.cs" />
+    <Compile Include="TransferProtocol\LoggingVariableType.cs" />
     <Compile Include="TransferProtocol\ICommandExchange.cs" />
-    <Compile Include="TransferProtocol\PingCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransferProtocol\CommunicationPort.cs" />
     <Compile Include="TransferProtocol\CommunicationChannel.cs" />
+    <Compile Include="TransferProtocol\Parameter.cs" />
+    <Compile Include="TransferProtocol\ParameterType.cs" />
+    <Compile Include="TransferProtocol\ParametersInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CrazyflieDotNet.Crazyradio\CrazyflieDotNet.Crazyradio.csproj">

@@ -136,11 +136,6 @@ namespace CrazyflieDotNet
 					Ack ackPacket;
 					byte[] ackPacketBytes = null;
 
-					Log.InfoFormat("Ping Packet Request");
-					ackPacket = crazyRadioMessenger.Send(new PingCommand());
-					Log.InfoFormat("ACK Response: {0}", ackPacket);
-
-
 					ushort thrustIncrements = 1000;
 					float pitchIncrements = 5;
 					float yawIncrements = 2;

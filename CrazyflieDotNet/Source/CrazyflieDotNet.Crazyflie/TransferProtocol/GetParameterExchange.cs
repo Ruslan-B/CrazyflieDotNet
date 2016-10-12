@@ -1,43 +1,38 @@
-﻿#region Imports
-
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-
-#endregion
 
 namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 {
-    public sealed class GetTableOfContentsItemExchange : ICommandExchange<TableOfContentsItem>
+    public sealed class GetParameterExchange : ICommandExchange<Parameter>
     {
-        private static readonly byte Header = CrtpHelper.CreateHeader(CommunicationPort.Logging, CommunicationChannel.Channel0);
-        public static readonly byte GetItem = 0x00;
+        private static readonly byte Header = CrtpHelper.CreateHeader(CommunicationPort.Parameters, CommunicationChannel.Channel0);
         private readonly byte[] _commandBytes;
-        
-        public GetTableOfContentsItemExchange(byte itemId)
+
+        public GetParameterExchange(byte id)
         {
-            _commandBytes = new[] {Header, GetItem, itemId};
+            const byte getItem = 0x00;
+            _commandBytes = new[] {Header, getItem, id};
         }
 
         public byte[] GetCommandBytes() => _commandBytes;
 
-        public bool TryParse(byte[] data, out TableOfContentsItem result)
+        public bool TryParse(byte[] data, out Parameter result)
         {
-            const int minDataLength = 6;
+            const int minDataLength = 5;
             if (data.Length > minDataLength && data.StartsWith(_commandBytes))
             {
                 var group = data.Skip(4).TakeWhile(b => b != 0).ToArray();
                 var name = data.Skip(group.Length + 5).TakeWhile(b => b != 0).ToArray();
-
-                result = new TableOfContentsItem
+                result = new Parameter
                          {
                              Id = data[2],
-                             ValueType = (ItemValueType) data[3],
+                             Type = (ParameterType) data[3],
                              Group = Encoding.ASCII.GetString(group),
                              Name = Encoding.ASCII.GetString(name)
                          };
                 return true;
             }
-            result = default(TableOfContentsItem);
+            result = default(Parameter);
             return false;
         }
     }

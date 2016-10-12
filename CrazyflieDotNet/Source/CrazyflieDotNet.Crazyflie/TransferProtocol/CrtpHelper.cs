@@ -1,5 +1,6 @@
 ﻿#region Imports
 
+using System;
 using System.Diagnostics;
 
 #endregion
@@ -13,7 +14,7 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
         public static int GetCrc(byte[] data)
         {
             Debug.Assert(data != null && data.Length == 4);
-            return data[3] << 8 * 3 | data[2] << 8 * 2 | data[1] << 8 | data[0];
+            return BitConverter.ToInt32(data, 0);
         }
     }
 }

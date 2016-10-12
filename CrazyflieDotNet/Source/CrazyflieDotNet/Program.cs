@@ -33,7 +33,7 @@ namespace CrazyflieDotNet
 				// TESTS:
 				try
 				{
-                    TestLogging.Execute(crazyradioDriver);
+                    Test.Execute(crazyradioDriver);
                     //TestCRTP(crazyradioDriver);
 
                     //TestPS3Controller(crazyradioDriver);

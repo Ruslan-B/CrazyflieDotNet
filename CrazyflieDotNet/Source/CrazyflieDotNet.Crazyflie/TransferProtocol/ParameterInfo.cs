@@ -1,6 +1,6 @@
 ﻿namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 {
-    public struct Parameter
+    public struct ParameterInfo
     {
         public byte Id { get; set; }
 

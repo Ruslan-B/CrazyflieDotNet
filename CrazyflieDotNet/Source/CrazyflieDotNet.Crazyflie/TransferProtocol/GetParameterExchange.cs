@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 {
-    public sealed class GetParameterExchange : ICommandExchange<Parameter>
+    public sealed class GetParameterExchange : ICommandExchange<ParameterInfo>
     {
         private static readonly byte Header = CrtpHelper.CreateHeader(CommunicationPort.Parameters, CommunicationChannel.Channel0);
         private readonly byte[] _commandBytes;
@@ -16,14 +16,14 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
 
         public byte[] GetCommandBytes() => _commandBytes;
 
-        public bool TryParse(byte[] data, out Parameter result)
+        public bool TryParse(byte[] data, out ParameterInfo result)
         {
             const int minDataLength = 5;
             if (data.Length > minDataLength && data.StartsWith(_commandBytes))
             {
                 var group = data.Skip(4).TakeWhile(b => b != 0).ToArray();
                 var name = data.Skip(group.Length + 5).TakeWhile(b => b != 0).ToArray();
-                result = new Parameter
+                result = new ParameterInfo
                          {
                              Id = data[2],
                              Type = (ParameterType) data[3],
@@ -32,7 +32,7 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
                          };
                 return true;
             }
-            result = default(Parameter);
+            result = default(ParameterInfo);
             return false;
         }
     }

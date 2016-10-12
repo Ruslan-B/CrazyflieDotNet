@@ -12,7 +12,7 @@ using static CrazyflieDotNet.Crazyflie.TransferProtocol.BlockControl;
 
 namespace CrazyflieDotNet
 {
-    public class TestLogging
+    public class Test
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
@@ -33,6 +33,13 @@ namespace CrazyflieDotNet
             client.Send(new FlyControlCommand(roll: 0, pitch: 0, yaw: 0, thrust: 1000));
 
             var @params = GetParameters(client);
+            foreach (var param in @params)
+            {
+
+                var value = client.Send(new ReadParameterExchange(param));
+                Log.Info($"Param: {param} Value: {value}");
+
+            }
 
             //client.Send(new Parameters.GetParameterExchange());
 
@@ -82,7 +89,7 @@ namespace CrazyflieDotNet
             return items;
         }
 
-        private static List<Parameter> GetParameters(CrazyflieClient client)
+        private static List<ParameterInfo> GetParameters(CrazyflieClient client)
         {
             var paramsInfo = client.Send(new GetParametersInfoExchange());
             Log.Info($"Parameters info: {paramsInfo}");
@@ -91,7 +98,7 @@ namespace CrazyflieDotNet
                 .Select(id =>
                         {
                             var parameter = client.Send(new GetParameterExchange((byte) id));
-                            Log.Info($"Parameter: {parameter}");
+                            Log.Info($"ParameterInfo: {parameter}");
                             return parameter;
                         })
                 .ToList();

@@ -16,5 +16,6 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
         UInt16 = 0x09, // uint16_t '<H'
         UInt32 = 0x0A, // uint32_t '<L'
         UInt64 = 0x0B, //uint64_t '<Q'
+        ReadOnly = 1<<6
     }
 }

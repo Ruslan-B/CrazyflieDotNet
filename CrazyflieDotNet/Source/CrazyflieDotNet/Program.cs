@@ -162,9 +162,8 @@ namespace CrazyflieDotNet
 							case ConsoleKey.Spacebar:
 								var commanderPacket = new FlyControlCommand(roll, pitch, yaw, thrust = 10000);
 								Log.InfoFormat("Commander Packet Request: {0}", commanderPacket);
-								ackPacket = crazyRadioMessenger.Send(commanderPacket);
-								Log.InfoFormat("ACK Response: {0}", ackPacket);
-
+								crazyRadioMessenger.Send(commanderPacket);
+								
 								Log.InfoFormat("Paused...Hit SPACE to resume, ESC to quit.");
 
 								var pauseLoop = true;
@@ -227,8 +226,7 @@ namespace CrazyflieDotNet
 						{
 							var commanderPacket = new FlyControlCommand(roll, pitch, yaw, thrust);
 							Log.InfoFormat("Commander Packet Request: {0}", commanderPacket);
-							ackPacket = crazyRadioMessenger.Send(commanderPacket);
-							Log.InfoFormat("ACK Response: {0}", ackPacket);
+							crazyRadioMessenger.Send(commanderPacket);
 						}
 					}
 				}

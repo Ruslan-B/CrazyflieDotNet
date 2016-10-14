@@ -6,12 +6,16 @@ The with different implemenation of TransferProtocol API.
 
 *Please be advice work still in progress!*
 
-# Change log
-- Initial logging support - done
-- Prameters API - done
-- Logging packets parser and observable - in progress!
+## In progress
+- link quality as observable
 
-# License
+## Change log
+
+- initial logging support
+- prameters API
+- logging packets parser as observable
+
+## License
 This work is licensed under:
 [LGPL v3+](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 Copyright (c) 2016 Ruslan Balanukhin

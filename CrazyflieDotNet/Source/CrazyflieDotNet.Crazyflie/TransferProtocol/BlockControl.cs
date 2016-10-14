@@ -23,8 +23,8 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
         /// </summary>
         public sealed class CreateBlockExchange : BlockControlExchangeBase
         {
-            public CreateBlockExchange(byte blockId, IEnumerable<LoggingVariable> items)
-                : base(CreateBlock, blockId, ToPayload(items))
+            public CreateBlockExchange(byte blockId, IEnumerable<LoggingVariable> variables)
+                : base(CreateBlock, blockId, ToPayload(variables))
             {
             }
         }
@@ -34,8 +34,8 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
         /// </summary>
         public sealed class AppendBlockExchange : BlockControlExchangeBase
         {
-            public AppendBlockExchange(byte blockId, IEnumerable<LoggingVariable> items)
-                : base(AppendBlock, blockId, ToPayload(items))
+            public AppendBlockExchange(byte blockId, IEnumerable<LoggingVariable> variables)
+                : base(AppendBlock, blockId, ToPayload(variables))
             {
             }
         }

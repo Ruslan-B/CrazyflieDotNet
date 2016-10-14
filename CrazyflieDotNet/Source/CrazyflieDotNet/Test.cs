@@ -1,5 +1,4 @@
-﻿#region Imports
-
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,8 +6,6 @@ using CrazyflieDotNet.Crazyflie.TransferProtocol;
 using CrazyflieDotNet.Crazyradio.Driver;
 using log4net;
 using static CrazyflieDotNet.Crazyflie.TransferProtocol.BlockControl;
-
-#endregion
 
 namespace CrazyflieDotNet
 {
@@ -26,6 +23,7 @@ namespace CrazyflieDotNet
             var sw = Stopwatch.StartNew();
 
             var client = new CrazyflieClient(driver);
+            client.Connect();
             BlockControlResult controlResult;
             controlResult = client.Send(new ResetAllBlocksExchange());
             Log.Info($"Reset all logging blocks, Result: {controlResult}");
@@ -39,37 +37,41 @@ namespace CrazyflieDotNet
             }
             var soundEffect = @params.FirstOrDefault(x => x.FullName == "sound.effect");
 
-            client.Send(new WriteParameterExchange(soundEffect, 10));
+            client.Send(new WriteParameterExchange(soundEffect, 0));
             
             var items = GetLoggingVariables(client);
 
             var monitor = items.Where(x => x.Group == "stabilizer").ToList();
 
-            //byte blockId = 0x7f;
-            //controlResult = client.Send(new CreateBlockExchange(blockId, monitor));
-            //Log.Info($"Create logging block with id: {blockId}, Result: {controlResult}");
+            byte blockId = 0x7f;
+            controlResult = client.Send(new CreateBlockExchange(blockId, monitor));
+            Log.Info($"Create logging block with id: {blockId}, Result: {controlResult}");
 
-            //controlResult = client.Send(new StartBlockExchange(blockId, interval: 100));
-            //Log.Info($"Start logging block with  id: {blockId}, Result: {controlResult}");
+            controlResult = client.Send(new StartBlockExchange(blockId, interval: 20));
+            Log.Info($"Start logging block with  id: {blockId}, Result: {controlResult}");
 
             client.Send(new FlyControlCommand(roll: 0, pitch: 0, yaw: 0, thrust: 5000));
             Log.Info($"Done in: {sw.ElapsedMilliseconds}");
             Log.Info("Execute test done! Press Escape!");
 
-            //while (true)
-            //{
-            //    var data = driver.SendData(new byte[] { 0xff });
-            //    if (data.Count > 4)
-            //    {
-            //        Console.WriteLine(BitConverter.ToString(data));
-            //    }
-            //    if (Console.KeyAvailable && Console.ReadKey().Key == ConsoleKey.Escape)
-            //    {
-            //        break;
-            //    }
-            //}
+
+            client.Listen(new LoggingParser(blockId, monitor))
+                .Subscribe(block =>
+                           {
+                               var pairs = string.Join("; ", block.Select(x => $"{x.Key.Name} = {x.Value}"));
+                               Log.Info($"Values from block id: {block.Id}, {pairs}");
+                           });
+
+            while (true)
+            {
+                if (Console.KeyAvailable && Console.ReadKey().Key == ConsoleKey.Escape)
+                {
+                    break;
+                }
+            }
 
             client.Send(new ResetAllBlocksExchange());
+            client.Close();
         }
 
         private static List<LoggingVariable> GetLoggingVariables(CrazyflieClient client)

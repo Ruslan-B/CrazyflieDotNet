@@ -28,13 +28,7 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
                 var group = data.Skip(4).TakeWhile(b => b != 0).ToArray();
                 var name = data.Skip(group.Length + 5).TakeWhile(b => b != 0).ToArray();
 
-                result = new LoggingVariable
-                         {
-                             Id = data[2],
-                             Type = (LoggingVariableType) data[3],
-                             Group = Encoding.ASCII.GetString(group),
-                             Name = Encoding.ASCII.GetString(name)
-                         };
+                result = new LoggingVariable(data[2], (LoggingVariableType) data[3], Encoding.ASCII.GetString(group), Encoding.ASCII.GetString(name));
                 return true;
             }
             result = default(LoggingVariable);

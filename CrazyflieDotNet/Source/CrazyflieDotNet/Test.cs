@@ -30,19 +30,17 @@ namespace CrazyflieDotNet
             controlResult = client.Send(new ResetAllBlocksExchange());
             Log.Info($"Reset all logging blocks, Result: {controlResult}");
 
-            client.Send(new FlyControlCommand(roll: 0, pitch: 0, yaw: 0, thrust: 1000));
-
             var @params = GetParameters(client);
             foreach (var param in @params)
             {
 
                 var value = client.Send(new ReadParameterExchange(param));
                 Log.Info($"Param: {param} Value: {value}");
-
             }
+            var soundEffect = @params.FirstOrDefault(x => x.FullName == "sound.effect");
 
-            //client.Send(new Parameters.GetParameterExchange());
-
+            client.Send(new WriteParameterExchange(soundEffect, 10));
+            
             var items = GetLoggingVariables(client);
 
             var monitor = items.Where(x => x.Group == "stabilizer").ToList();
@@ -54,6 +52,7 @@ namespace CrazyflieDotNet
             //controlResult = client.Send(new StartBlockExchange(blockId, interval: 100));
             //Log.Info($"Start logging block with  id: {blockId}, Result: {controlResult}");
 
+            client.Send(new FlyControlCommand(roll: 0, pitch: 0, yaw: 0, thrust: 5000));
             Log.Info($"Done in: {sw.ElapsedMilliseconds}");
             Log.Info("Execute test done! Press Escape!");
 

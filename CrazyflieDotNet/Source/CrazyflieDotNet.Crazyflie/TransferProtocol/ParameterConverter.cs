@@ -35,5 +35,37 @@ namespace CrazyflieDotNet.Crazyflie.TransferProtocol
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
+
+        public static byte[] GetBytes(ParameterType type, object value)
+        {
+            type &= ~ParameterType.ReadOnly;
+            switch (type)
+            {
+                case ParameterType.Int8:
+                    return BitConverter.GetBytes(Convert.ToSByte(value));
+                case ParameterType.Int16:
+                    return BitConverter.GetBytes(Convert.ToInt16(value));
+                case ParameterType.Int32:
+                    return BitConverter.GetBytes(Convert.ToInt32(value));
+                case ParameterType.Int64:
+                    return BitConverter.GetBytes(Convert.ToInt64(value));
+                case ParameterType.Float16:
+                    throw new NotSupportedException();
+                case ParameterType.Float32:
+                    return BitConverter.GetBytes(Convert.ToSingle(value));
+                case ParameterType.Float64:
+                    return BitConverter.GetBytes(Convert.ToDouble(value));
+                case ParameterType.UInt8:
+                    return new[] {Convert.ToByte(value)};
+                case ParameterType.UInt16:
+                    return BitConverter.GetBytes(Convert.ToUInt16(value));
+                case ParameterType.UInt32:
+                    return BitConverter.GetBytes(Convert.ToUInt32(value));
+                case ParameterType.UInt64:
+                    return BitConverter.GetBytes(Convert.ToUInt64(value));
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
     }
 }

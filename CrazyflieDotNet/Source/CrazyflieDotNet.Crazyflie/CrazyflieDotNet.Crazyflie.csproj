@@ -74,6 +74,7 @@
     <Compile Include="TransferProtocol\ParameterType.cs" />
     <Compile Include="TransferProtocol\ParametersInfo.cs" />
     <Compile Include="TransferProtocol\ReadParameterExchange.cs" />
+    <Compile Include="TransferProtocol\WriteParameterExchange.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CrazyflieDotNet.Crazyradio\CrazyflieDotNet.Crazyradio.csproj">

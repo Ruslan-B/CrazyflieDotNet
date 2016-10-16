@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TransferProtocol\ArrayOfByteExtension.cs" />
+    <Compile Include="TransferProtocol\ConsoleParser.cs" />
     <Compile Include="TransferProtocol\CrtpHelper.cs" />
     <Compile Include="TransferProtocol\FlyControlCommand.cs" />
     <Compile Include="TransferProtocol\CrazyflieClient.cs" />

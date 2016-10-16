@@ -23,7 +23,20 @@ namespace CrazyflieDotNet
             var sw = Stopwatch.StartNew();
 
             var client = new CrazyflieClient(driver);
+
+            client.Listen(new ConsoleParser()).Subscribe(line => Log.Warn(line));
+
             client.Connect();
+
+            Log.Info("Press spacebar to start!");
+            while (true)
+            {
+                if (Console.KeyAvailable && Console.ReadKey().Key == ConsoleKey.Spacebar)
+                {
+                    break;
+                }
+            }
+
             BlockControlResult controlResult;
             controlResult = client.Send(new ResetAllBlocksExchange());
             Log.Info($"Reset all logging blocks, Result: {controlResult}");
@@ -38,11 +51,11 @@ namespace CrazyflieDotNet
             var soundEffect = @params.FirstOrDefault(x => x.FullName == "sound.effect");
 
             client.Send(new WriteParameterExchange(soundEffect, 0));
-            
+
             var items = GetLoggingVariables(client);
 
             var monitor = items.Where(x => x.Group == "stabilizer").ToList();
-
+           
             byte blockId = 0x7f;
             controlResult = client.Send(new CreateBlockExchange(blockId, monitor));
             Log.Info($"Create logging block with id: {blockId}, Result: {controlResult}");
@@ -53,8 +66,7 @@ namespace CrazyflieDotNet
             client.Send(new FlyControlCommand(roll: 0, pitch: 0, yaw: 0, thrust: 5000));
             Log.Info($"Done in: {sw.ElapsedMilliseconds}");
             Log.Info("Execute test done! Press Escape!");
-
-
+            
             client.Listen(new LoggingParser(blockId, monitor))
                 .Subscribe(block =>
                            {
@@ -82,7 +94,7 @@ namespace CrazyflieDotNet
             var items = Enumerable.Range(0, loggingInfo.Count)
                 .Select(id =>
                         {
-                            var variable = client.Send(new GetLoggingVariableExchange((byte) id));
+                            var variable = client.Send(new GetLoggingVariableExchange((byte)id));
                             Log.Info($"Logging variable: {variable}");
                             return variable;
                         })
@@ -98,7 +110,7 @@ namespace CrazyflieDotNet
             var items = Enumerable.Range(0, paramsInfo.Count)
                 .Select(id =>
                         {
-                            var parameter = client.Send(new GetParameterExchange((byte) id));
+                            var parameter = client.Send(new GetParameterExchange((byte)id));
                             Log.Info($"ParameterInfo: {parameter}");
                             return parameter;
                         })

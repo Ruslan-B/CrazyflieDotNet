@@ -1,4 +1,4 @@
-# fork of CrazyflieDotNet with support of logging and parameter systems for Crazyflie2
+# fork of CrazyflieDotNet with logging and parameter API for Crazyflie2
 Dot.NET libraries written in C# for Crazyflie Quadcopters and Crazyradios.
 
 This is fork of https://github.com/ckarcz/CrazyflieDotNet.
@@ -11,9 +11,10 @@ The with different implemenation of TransferProtocol API.
 
 ## Change log
 
-- initial logging support
+- logging API
 - prameters API
-- logging packets parser as observable
+- logging packets parser 
+- console packets parser
 
 ## License
 This work is licensed under:
